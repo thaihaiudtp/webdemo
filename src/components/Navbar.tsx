@@ -1,15 +1,11 @@
 "use client";
 import Image from "next/image";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Session } from "next-auth";
 import { useState } from "react";
 import { useSession, signOut } from "next-auth/react";
-interface NavbarProps {
-  session: Session | null; 
-}
 
-export default function Navbar({ session }: NavbarProps) {
+export default function Navbar() {
+  const session = useSession();
   const pathName = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const { data: session1, status } = useSession();
@@ -27,7 +23,6 @@ export default function Navbar({ session }: NavbarProps) {
         </div>
 
         <ul className="flex gap-x-2">
-          {session ? (
             <div className='flex items-center sm:space-x-8 space-x-6'>
             <div className="relative">
               <button
@@ -49,21 +44,6 @@ export default function Navbar({ session }: NavbarProps) {
               )}
             </div> 
             </div> 
-          ) : (
-            <>
-              <li className="px-3 py-1 text-gray-800">
-                <Link href="/about">About</Link>
-              </li>
-
-              <li className="px-3 py-1 text-gray-800">
-                <Link href="/login">Login</Link>
-              </li>
-
-              <li className="px-3 py-1 text-gray-800">
-                <Link href="/register">Register</Link>
-              </li>
-            </>
-          )}
         </ul>
       </div>
     </nav>

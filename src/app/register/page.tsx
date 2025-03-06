@@ -2,12 +2,12 @@
 
 import axios, {AxiosError} from "axios";
 import { FormEvent, useState } from "react";
-import { signIn } from 'next-auth/react'
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
-
+import { useEffect } from "react";
 function RegisterPage() {
-
+  const session = useSession();
   const [error, setError] = useState();
   const router = useRouter();                     
 
@@ -29,20 +29,10 @@ function RegisterPage() {
       })
       .then((res) => {
         console.log(res);
+        router.push('/login');
       });
 
       console.log(signupResponse);
-
-      const signinResponse = await signIn('credentials', {
-        redirect: false,
-        email,
-        password,
-      });
-
-      if (signinResponse?.ok) return router.push('/login');
-
-      console.log(signinResponse);
-
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError) {
@@ -51,7 +41,12 @@ function RegisterPage() {
     }
 };
 
-
+  useEffect(() => {
+    if (session.status === "loading") return;
+    if(session.data !== null){
+      router.push("/")
+    }   
+  }, [session, router])
   return (
     <div className="justify-center h-[calc(100vh-4rem)] flex items-center" >
       <form onSubmit={handleSubmit} className="bg-neutral-950 px-8 py-10 w-3/12">
